@@ -26,7 +26,7 @@
 
         #quiz-container {
             background: white;
-            max-width: 800px;
+            max-width: 850px;
             width: 100%;
             padding: 30px;
             border-radius: 15px;
@@ -40,8 +40,16 @@
             padding-bottom: 10px;
         }
 
-        .question { font-size: 1.2rem; font-weight: bold; margin-bottom: 20px; }
+        .question { font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; }
         
+        .hint-text { 
+            font-style: italic; 
+            color: #555; 
+            margin-bottom: 20px; 
+            display: block;
+            font-size: 0.95rem;
+        }
+
         .option-btn {
             display: block;
             width: 100%;
@@ -54,87 +62,368 @@
             text-align: left;
             font-size: 1rem;
             transition: 0.2s;
+            color: black;
         }
 
         .option-btn:hover { background: var(--stomach-acid); }
-        .option-btn:disabled { cursor: not-allowed; opacity: 0.7; }
+        .option-btn:disabled { cursor: not-allowed; opacity: 0.8; color: black; }
 
         #feedback {
             margin-top: 20px;
             padding: 15px;
             border-radius: 5px;
             display: none;
+            border: 2px solid transparent;
         }
 
-        .correct { background-color: #d4edda; border: 1px solid #c3e6cb; }
-        .incorrect { background-color: #f8d7da; border: 1px solid #f5c6cb; }
+        .correct { background-color: #d4edda; border-color: #c3e6cb !important; color: #155724; }
+        .incorrect { background-color: #f8d7da; border-color: #f5c6cb !important; color: #721c24; }
 
         #next-btn, #restart-btn {
             margin-top: 20px;
-            padding: 10px 25px;
+            padding: 12px 30px;
             background-color: var(--deep-liver);
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            float: right;
+            font-weight: bold;
         }
 
         .hidden { display: none; }
-        .summary-box { background: #eee; padding: 20px; border-radius: 10px; margin-top: 20px; }
+        .summary-box { background: #f9f9f9; padding: 20px; border-radius: 10px; margin-top: 20px; border: 1px solid #ddd; }
+        ul { padding-left: 20px; }
     </style>
 </head>
 <body>
 
 <div id="quiz-container">
     <div class="header">
-        <h1>Biology 20: Unit D Review</h1>
-        <p>Topic: Digestive System & Biochemistry</p>
+        <h1>Biology 20: Unit D Digestion</h1>
+        <p>Diploma Preparation Question Bank</p>
         <div id="progress">Question 1 of 25</div>
     </div>
 
     <div id="quiz-body">
         <div id="question-text" class="question"></div>
+        <div id="hint-box" class="hint-text"></div>
         <div id="options-container"></div>
         <div id="feedback"></div>
-        <button id="next-btn" class="hidden">Next Question</button>
+        <div style="text-align: right;">
+            <button id="next-btn" class="hidden">Next Question →</button>
+        </div>
     </div>
 
     <div id="results-page" class="hidden">
-        <h2>Quiz Complete!</h2>
+        <h2>Assessment Results</h2>
         <h3 id="final-score"></h3>
         <div id="analysis" class="summary-box"></div>
-        <button id="restart-btn" onclick="location.reload()">Restart Quiz</button>
+        <button id="restart-btn" onclick="location.reload()">Try Again</button>
     </div>
 </div>
 
 <script>
     const quizData = [
         {
-            q: "A student performs a lab test on an unknown food sample. The sample turns blue-black with iodine, but remains blue after heating with Benedict's. What is the composition?",
+            q: "A student performs a lab test on an unknown food sample. The sample turns blue-black when iodine solution is added, but remains blue after being heated with Benedict's solution. What is the most likely composition?",
+            hint: "Consider which polysaccharide iodine detects and what Benedict's indicates about sugars.",
             options: [
-                { text: "Contains starch but no reducing sugars", correct: true },
-                { text: "Contains glucose but no starch", correct: false },
-                { text: "Consists primarily of lipids", correct: false },
-                { text: "Contains maltose and glycogen", correct: false }
+                { text: "The food contains starch but no reducing sugars.", correct: true },
+                { text: "The food contains glucose but no starch.", correct: false },
+                { text: "The food consists primarily of lipids and proteins.", correct: false },
+                { text: "The food contains maltose and glycogen.", correct: false }
             ],
-            feedback: "Iodine is specific to starch. Benedict's requires heat to turn orange for reducing sugars (glucose/maltose).",
-            category: "Lab Tests"
+            feedback: "Iodine is a specific indicator for starch (blue-black). Benedict's tests for reducing sugars like glucose (requires heat to turn orange/red).",
+            category: "Lab Tests & Biochemistry"
         },
-        // ... (Remaining 24 questions would follow this structure)
         {
-            q: "A patient has fatty stools (steatorrhea) and difficulty digesting fats. Damage to which organ is most likely?",
+            q: "Which of the following chemical reactions represents the hydrolysis of a triglyceride?",
+            hint: "Hydrolysis involves adding water to break bonds into smaller subunits.",
+            options: [
+                { text: "Triglyceride + 3H₂O → Glycerol + 3 Fatty Acids", correct: true },
+                { text: "Glycerol + 3 Fatty Acids → Triglyceride + 3H₂O", correct: false },
+                { text: "Triglyceride + Enzyme → Polypeptides + H₂O", correct: false },
+                { text: "Amino Acid + Amino Acid → Dipeptide + H₂O", correct: false }
+            ],
+            feedback: "Hydrolysis ('water-splitting') uses water to break ester bonds in lipids, releasing glycerol and fatty acids.",
+            category: "Biochemistry"
+        },
+        {
+            q: "A patient presents with light-colored, fatty stools (steatorrhea) and difficulty digesting fats. Damage to which organ is the most likely cause?",
+            hint: "Think about which organ produces the substance responsible for emulsifying fats.",
             options: [
                 { text: "Liver", correct: true },
                 { text: "Stomach", correct: false },
                 { text: "Large Intestine", correct: false },
                 { text: "Esophagus", correct: false }
             ],
-            feedback: "The liver produces bile, which emulsifies fats to increase surface area for lipase.",
+            feedback: "The liver produces bile. Without bile, fats cannot be emulsified, making it difficult for lipase to digest them, leading to fatty stools.",
+            category: "Anatomy & Disorders"
+        },
+        {
+            q: "A sample of gastric juice is extracted from the stomach. Which of the following would be found in high concentrations and what is its primary role?",
+            hint: "The stomach environment is highly acidic to activate specific proteases.",
+            options: [
+                { text: "HCl; converts pepsinogen to pepsin", correct: true },
+                { text: "Bile; breaks down polypeptides", correct: false },
+                { text: "Amylase; begins the breakdown of starch", correct: false },
+                { text: "Trypsin; digests lipids into fatty acids", correct: false }
+            ],
+            feedback: "Hydrochloric acid (HCl) lowers pH to ~2, which is necessary to activate pepsinogen into the active enzyme pepsin.",
+            category: "Enzymes & Hormones"
+        },
+        {
+            q: "During a Biuret test, a solution turns from blue to violet. What does this change indicate?",
+            hint: "The Biuret test specifically targets peptide bonds.",
+            options: [
+                { text: "Presence of proteins", correct: true },
+                { text: "Presence of glucose", correct: false },
+                { text: "Presence of lipids", correct: false },
+                { text: "Presence of nucleic acids", correct: false }
+            ],
+            feedback: "The violet color change in a Biuret test confirms the presence of peptide bonds, which are found in proteins.",
+            category: "Lab Tests"
+        },
+        {
+            q: "A person takes a medication that inhibits the action of the pancreas. Which of the following would be most affected?",
+            hint: "The pancreas secretes enzymes for all three macronutrients.",
+            options: [
+                { text: "Chemical digestion of all three macronutrients in the small intestine.", correct: true },
+                { text: "Only mechanical digestion in the stomach.", correct: false },
+                { text: "The absorption of water in the colon.", correct: false },
+                { text: "The production of bile in the liver.", correct: false }
+            ],
+            feedback: "The pancreas is the source of amylase (carbs), trypsin/chymotrypsin (proteins), and lipase (fats).",
+            category: "Anatomy"
+        },
+        {
+            q: "Which of the following best describes the role of Secretin in the digestive process?",
+            hint: "Secretin is triggered by the arrival of acidic chyme in the duodenum.",
+            options: [
+                { text: "Stimulates the pancreas to release bicarbonate ions.", correct: true },
+                { text: "Triggers the gallbladder to release bile.", correct: false },
+                { text: "Signals the stomach to produce more HCl.", correct: false },
+                { text: "Directly breaks down proteins into amino acids.", correct: false }
+            ],
+            feedback: "Secretin signals the pancreas to release bicarbonate to neutralize the acidic chyme entering the small intestine.",
+            category: "Enzymes & Hormones"
+        },
+        {
+            q: "If the pH of the duodenum were to remain at 2.0, what would be the immediate consequence?",
+            hint: "Consider the optimal pH for pancreatic enzymes like trypsin and lipase.",
+            options: [
+                { text: "Pancreatic enzymes would denature and fail to digest food.", correct: true },
+                { text: "Pepsin would become more active and digest the wall.", correct: false },
+                { text: "Bile would solidify into gallstones.", correct: false },
+                { text: "Starch digestion would accelerate.", correct: false }
+            ],
+            feedback: "Pancreatic enzymes require a basic pH (around 8.0). An acidic environment would denature these proteins.",
+            category: "Enzymes & Hormones"
+        },
+        {
+            q: "Which macronutrient contains nitrogen and is composed of monomers linked by peptide bonds?",
+            hint: "Look for the element that distinguishes this group from carbs and lipids.",
+            options: [
+                { text: "Proteins", correct: true },
+                { text: "Carbohydrates", correct: false },
+                { text: "Triglycerides", correct: false },
+                { text: "Polysaccharides", correct: false }
+            ],
+            feedback: "Amino acids (the building blocks of proteins) contain an amino group (-NH2) which provides nitrogen.",
+            category: "Biochemistry"
+        },
+        {
+            q: "A patient has had their gallbladder removed. Which dietary modification is most necessary?",
+            hint: "The gallbladder stores and concentrates a substance used for a specific macronutrient.",
+            options: [
+                { text: "Reducing the intake of high-fat meals.", correct: true },
+                { text: "Increasing the intake of complex carbohydrates.", correct: false },
+                { text: "Avoiding all protein sources.", correct: false },
+                { text: "Drinking more acidic juices.", correct: false }
+            ],
+            feedback: "Without a gallbladder to store bile, the body cannot release a concentrated 'bolus' of bile to handle large amounts of fat at once.",
+            category: "Anatomy & Disorders"
+        },
+        {
+            q: "Which enzyme is correctly matched with its site of production and substrate?",
+            hint: "Review the enzymes released into the mouth, stomach, and small intestine.",
+            options: [
+                { text: "Trypsin - Pancreas - Proteins", correct: true },
+                { text: "Amylase - Stomach - Starch", correct: false },
+                { text: "Pepsin - Liver - Fats", correct: false },
+                { text: "Lipase - Small Intestine - Glycogen", correct: false }
+            ],
+            feedback: "Trypsin is a protease produced by the pancreas and released into the duodenum to digest polypeptides.",
+            category: "Enzymes & Hormones"
+        },
+        {
+            q: "What is the primary function of the villi and microvilli in the small intestine?",
+            hint: "These structures are highly folded to maximize efficiency.",
+            options: [
+                { text: "Increasing surface area for the absorption of nutrients.", correct: true },
+                { text: "Secretory site for hydrochloric acid.", correct: false },
+                { text: "Mechanical churning of chyme.", correct: false },
+                { text: "Filtering bacteria out of the blood.", correct: false }
+            ],
+            feedback: "The 'finger-like' projections increase the surface area thousands of times over to maximize nutrient uptake.",
+            category: "Anatomy"
+        },
+        {
+            q: "During the 'translucent spot' test, a piece of brown paper becomes see-through. This confirms the presence of:",
+            hint: "This test is a physical indicator for non-polar molecules.",
+            options: [
+                { text: "Lipids", correct: true },
+                { text: "Simple sugars", correct: false },
+                { text: "Amino acids", correct: false },
+                { text: "Starch", correct: false }
+            ],
+            feedback: "Lipids do not evaporate like water and fill the gaps in the paper fibers, making it translucent.",
+            category: "Lab Tests"
+        },
+        {
+            q: "Which molecule is a polymer of glucose used for energy storage in the human liver?",
+            hint: "Plants use starch, but animals have a different storage form.",
+            options: [
+                { text: "Glycogen", correct: true },
+                { text: "Cellulose", correct: false },
+                { text: "Lactose", correct: false },
+                { text: "Insulin", correct: false }
+            ],
+            feedback: "Glycogen is the animal equivalent of starch, stored mainly in the liver and muscle tissues.",
+            category: "Biochemistry"
+        },
+        {
+            q: "A patient's cardiac sphincter (lower esophageal sphincter) does not close properly. What symptom is most likely?",
+            hint: "The cardiac sphincter separates the esophagus from the highly acidic stomach.",
+            options: [
+                { text: "Heartburn or acid reflux", correct: true },
+                { text: "Inability to absorb Vitamin B12", correct: false },
+                { text: "Reduced bile production", correct: false },
+                { text: "Constipation", correct: false }
+            ],
+            feedback: "If the sphincter fails, stomach acid splashes back into the esophagus, which lacks a protective mucus lining.",
+            category: "Anatomy & Disorders"
+        },
+        {
+            q: "Which enzyme handles the final step of protein digestion at the small intestine brush border?",
+            hint: "Think of the enzymes located directly on the surface of the small intestine.",
+            options: [
+                { text: "Peptidases", correct: true },
+                { text: "Pepsin", correct: false },
+                { text: "Amylase", correct: false },
+                { text: "Enterokinase", correct: false }
+            ],
+            feedback: "Peptidases break down small peptides into individual amino acids that can be absorbed into the blood.",
+            category: "Enzymes & Hormones"
+        },
+        {
+            q: "Gastrin is a hormone produced by the stomach. What is its primary stimulus and effect?",
+            hint: "Hormones often work in feedback loops based on the presence of food.",
+            options: [
+                { text: "Stimulus: Food in stomach; Effect: Stimulates HCl release.", correct: true },
+                { text: "Stimulus: Acid in duodenum; Effect: Inhibits motility.", correct: false },
+                { text: "Stimulus: High blood sugar; Effect: Releases insulin.", correct: false },
+                { text: "Stimulus: Fats in duodenum; Effect: Contracts gallbladder.", correct: false }
+            ],
+            feedback: "The physical stretching of the stomach or presence of protein triggers Gastrin to increase acid production.",
+            category: "Enzymes & Hormones"
+        },
+        {
+            q: "What is the primary role of the large intestine (colon)?",
+            hint: "Most chemical digestion is finished by the time waste reaches this stage.",
+            options: [
+                { text: "Reabsorption of water and vitamins.", correct: true },
+                { text: "Completion of fat digestion.", correct: false },
+                { text: "Secretion of digestive enzymes.", correct: false },
+                { text: "Absorption of glucose and amino acids.", correct: false }
+            ],
+            feedback: "The colon is responsible for reclaiming water to prevent dehydration and houses bacteria that produce Vitamin K.",
+            category: "Anatomy"
+        },
+        {
+            q: "Which of the following is an example of an anabolic reaction?",
+            hint: "Anabolism involves building larger molecules from smaller subunits.",
+            options: [
+                { text: "Linking glucose molecules to form glycogen.", correct: true },
+                { text: "Breaking down proteins into amino acids.", correct: false },
+                { text: "Hydrolysis of fats during exercise.", correct: false },
+                { text: "Digestion of starch by amylase.", correct: false }
+            ],
+            feedback: "Anabolism is synthesis. Building glycogen from glucose requires energy and forms a larger molecule.",
+            category: "Biochemistry"
+        },
+        {
+            q: "A drug neutralizes the acidity of the stomach. How would this affect the digestion of a steak?",
+            hint: "Steak is primarily protein. Consider the enzymes involved in the stomach.",
+            options: [
+                { text: "Protein digestion would stop because pepsin wouldn't activate.", correct: true },
+                { text: "Starch digestion would increase.", correct: false },
+                { text: "Fat digestion would be enhanced.", correct: false },
+                { text: "The steak would break down faster mechanically.", correct: false }
+            ],
+            feedback: "Pepsinogen remains inactive without HCl. Therefore, protein breakdown would not occur in the stomach.",
+            category: "Enzymes & Hormones"
+        },
+        {
+            q: "What is the structural difference between a saturated and an unsaturated fatty acid?",
+            hint: "Focus on the bonding between carbon atoms.",
+            options: [
+                { text: "Unsaturated fats have one or more double bonds.", correct: true },
+                { text: "Saturated fats contain more nitrogen.", correct: false },
+                { text: "Unsaturated fats have more hydrogen atoms.", correct: false },
+                { text: "Saturated fats are the building blocks of proteins.", correct: false }
+            ],
+            feedback: "Unsaturated fatty acids have C=C double bonds, creating 'kinks' that keep them liquid at room temperature.",
+            category: "Biochemistry"
+        },
+        {
+            q: "Which lab test detects reducing sugars, and what is a positive result?",
+            hint: "This test involves a color change from blue to a warm color.",
+            options: [
+                { text: "Benedict's test; turns orange or red after heating.", correct: true },
+                { text: "Iodine test; turns dark purple.", correct: false },
+                { text: "Biuret test; turns pink or violet.", correct: false },
+                { text: "Sudan IV; forms a dark red layer.", correct: false }
+            ],
+            feedback: "Benedict's solution reacts with reducing sugars when heated, changing from blue to green, yellow, or brick-red.",
+            category: "Lab Tests"
+        },
+        {
+            q: "The presence of fats in the duodenum triggers which hormone to slow down stomach emptying?",
+            hint: "This hormone acts like a 'brake' on the stomach.",
+            options: [
+                { text: "Cholecystokinin (CCK)", correct: true },
+                { text: "Gastrin", correct: false },
+                { text: "Insulin", correct: false },
+                { text: "Pepsinogen", correct: false }
+            ],
+            feedback: "CCK slows the stomach down (enterogastrone function) to allow more time for fat digestion in the duodenum.",
+            category: "Enzymes & Hormones"
+        },
+        {
+            q: "How does the liver contribute to the homeostasis of blood glucose levels?",
+            hint: "Think about what happens to excess glucose after a meal.",
+            options: [
+                { text: "It converts excess glucose into glycogen for storage.", correct: true },
+                { text: "It secretes amylase to digest blood sugar.", correct: false },
+                { text: "It produces insulin to lower blood sugar.", correct: false },
+                { text: "It filters out glucose and excretes it in urine.", correct: false }
+            ],
+            feedback: "The liver acts as a buffer, storing glucose as glycogen when levels are high and releasing it when levels are low.",
+            category: "Anatomy & Biochemistry"
+        },
+        {
+            q: "Which of the following describes the correct path of a piece of bread (starch)?",
+            hint: "Trace the movement from the mouth to final absorption.",
+            options: [
+                { text: "Mouth → Esophagus → Stomach → Small Intestine", correct: true },
+                { text: "Mouth → Trachea → Stomach → Liver", correct: false },
+                { text: "Stomach → Pancreas → Small Intestine → Colon", correct: false },
+                { text: "Esophagus → Mouth → Small Intestine → Stomach", correct: false }
+            ],
+            feedback: "Food travels the alimentary canal: Mouth, Esophagus, Stomach, then the Small Intestine.",
             category: "Anatomy"
         }
-        // Note: For brevity, I have included two samples. 
-        // Simply copy the object structure for the remaining 23 questions from the previous quiz response.
     ];
 
     let currentQuestionIndex = 0;
@@ -142,6 +431,7 @@
     let mistakes = [];
 
     const questionEl = document.getElementById('question-text');
+    const hintEl = document.getElementById('hint-box');
     const optionsEl = document.getElementById('options-container');
     const feedbackEl = document.getElementById('feedback');
     const nextBtn = document.getElementById('next-btn');
@@ -154,6 +444,7 @@
     function loadQuestion() {
         const current = quizData[currentQuestionIndex];
         questionEl.innerText = current.q;
+        hintEl.innerText = "Hint: " + current.hint;
         optionsEl.innerHTML = '';
         feedbackEl.classList.add('hidden');
         feedbackEl.style.display = 'none';
@@ -176,7 +467,7 @@
         allBtns.forEach(b => b.disabled = true);
 
         feedbackEl.style.display = 'block';
-        feedbackEl.innerHTML = `<strong>${opt.correct ? 'Correct!' : 'Incorrect.'}</strong><br>${question.feedback}`;
+        feedbackEl.innerHTML = `<strong>${opt.correct ? '✓ Correct!' : '✗ Incorrect.'}</strong><br>${question.feedback}`;
         feedbackEl.className = opt.correct ? 'correct' : 'incorrect';
 
         if (opt.correct) {
@@ -200,15 +491,19 @@
     function showResults() {
         document.getElementById('quiz-body').classList.add('hidden');
         document.getElementById('results-page').classList.remove('hidden');
-        document.getElementById('final-score').innerText = `Your Score: ${score} / ${quizData.length}`;
+        document.getElementById('final-score').innerText = `Your Final Score: ${score} / ${quizData.length}`;
         
-        let analysisText = "<strong>Review Recommendations:</strong><br>";
+        let analysisText = "<strong>Common Mistake Analysis:</strong><br>";
         if (mistakes.length === 0) {
-            analysisText += "Perfect! You have a solid grasp of Digestion.";
+            analysisText += "Outstanding! You have mastered the Unit D curriculum.";
         } else {
-            const uniqueMistakes = [...new Set(mistakes)];
-            analysisText += "Focus your studies on these areas where you missed questions:<br><ul>";
-            uniqueMistakes.forEach(m => analysisText += `<li>${m}</li>`);
+            const frequency = {};
+            mistakes.forEach(m => frequency[m] = (frequency[m] || 0) + 1);
+            
+            analysisText += "Based on your responses, you should review the following categories:<br><ul>";
+            for (const cat in frequency) {
+                analysisText += `<li><strong>${cat}</strong> (${frequency[cat]} missed)</li>`;
+            }
             analysisText += "</ul>";
         }
         document.getElementById('analysis').innerHTML = analysisText;
